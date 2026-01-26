@@ -11,7 +11,6 @@ import java.net.*;
 /// @author KxtR-27 (Kat)
 /// @see Host
 /// @see Switch
-@SuppressWarnings("unused")
 abstract class NetworkDevice implements AutoCloseable {
 	/// The ID provided as a command-line argument.
 	final String id;
@@ -25,7 +24,7 @@ abstract class NetworkDevice implements AutoCloseable {
 	protected NetworkDevice(String[] args) throws SocketException {
 		id = validateArgs(args);
 		myConfig = validateMyConfig();
-		socket = new DatagramSocket();
+		socket = new DatagramSocket(myConfig.port());
 	}
 
 	private String validateArgs(String[] args) {
@@ -49,6 +48,8 @@ abstract class NetworkDevice implements AutoCloseable {
 	}
 
 	protected void sendMessage(MessageFrame messageFrame, String recipientID) throws IOException {
+		System.out.printf("Sending message %s to %s%n", messageFrame, messageFrame.destinationID);
+
 		DeviceConfig recipient = ConfigParser.getConfigForDevice(recipientID);
 		DatagramPacket messagePacket = messageFrame.toPacket(recipient);
 		socket.send(messagePacket);

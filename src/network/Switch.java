@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("unused")
 public class Switch extends NetworkDevice {
 	private final Map<String, SwitchTableEntry> switchTable;
 	private final Map<String, String> virtualPorts;
@@ -33,11 +32,7 @@ public class Switch extends NetworkDevice {
 		}
 	}
 
-	private void transferMessage() throws IOException {
-		// blocking call
-		MessageFrame message = receiveMessage();
-		System.out.printf("Received message: \"%s\"%n", message);
-
+	private void transferMessage(MessageFrame message) throws IOException {
 		if (!inTable(message.sourceID)) {
 			addTableEntry(message.sourceID);
 			printSwitchTable();
@@ -79,14 +74,16 @@ public class Switch extends NetworkDevice {
 	protected void onOpen() throws IOException {
 		// by design, the loop can only be manually interrupted
 		//noinspection InfiniteLoopStatement
-		while (true)
-			transferMessage();
+		while (true) {
+			MessageFrame message = receiveMessage();
+			transferMessage(message);
+		}
 	}
 
 	@Override
-	protected void onClose() {
-
-	}
+	// The switch is interrupted manually, therefore
+	// closing behavior is redundant.
+	protected void onClose() {}
 
 	private static class SwitchTableEntry {
 		private static final DateTimeFormatter timeFormatter =
@@ -107,6 +104,15 @@ public class Switch extends NetworkDevice {
 		@Override
 		public String toString() {
 			return String.format("%15s | %s", switchPort, time.format(timeFormatter));
+		}
+	}
+
+	static void main(String[] args) {
+		try (Switch newSwitch = new Switch(args)) {
+			newSwitch.open();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

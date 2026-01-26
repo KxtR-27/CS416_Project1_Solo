@@ -19,7 +19,6 @@ import java.util.Map;
 /// @author KxtR-27 (Kat)
 /// @see #getConfigForDevice(String)
 /// @see DeviceConfig
-@SuppressWarnings("unused" /* because it's used later based on the rubric. */)
 public class ConfigParser {
 	/// The Gson object used in conjunction with a JsonReader to read data from the `config.json` file.
 	private static final Gson GSON = new Gson();
@@ -41,7 +40,6 @@ public class ConfigParser {
 	/// 				exists in the `config.json` file.</sup>_
 	///
 	/// @see DeviceConfig
-	@SuppressWarnings("unused" /* because it's used later on based upon the rubric.*/)
 	public static DeviceConfig getConfigForDevice(String id) {
 		updateConfigMap();
 		return CONFIGS_MAP.get(id);
