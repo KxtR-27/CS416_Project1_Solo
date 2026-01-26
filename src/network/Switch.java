@@ -14,7 +14,7 @@ public class Switch extends NetworkDevice {
 	private final List<SwitchTableEntry> switchTable;
 	private final Map<String, String> virtualPorts;
 
-	public Switch(String[] args) {
+	private Switch(String[] args) {
 		super(args);
 		switchTable = new ArrayList<>();
 		virtualPorts = new HashMap<>();
