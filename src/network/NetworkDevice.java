@@ -50,11 +50,13 @@ abstract class NetworkDevice implements AutoCloseable {
 		return config;
 	}
 
-	protected void sendMessage(MessageFrame messageFrame, DeviceConfig recipient) throws IOException {
+	protected void sendMessage(MessageFrame messageFrame, String recipientID) throws IOException {
+		DeviceConfig recipient = ConfigParser.getConfigForDevice(recipientID);
 		DatagramPacket messagePacket = messageFrame.toPacket(recipient);
 		socket.send(messagePacket);
 	}
 
+	// blocking call
 	protected MessageFrame receiveMessage() throws IOException {
 		DatagramPacket messagePacket = new DatagramPacket(new byte[1024], 1024);
 		socket.receive(messagePacket);
