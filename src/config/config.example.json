@@ -1,0 +1,63 @@
+[
+  {
+    "id": "A",
+    "port": 3300,
+    "ipAddress": "127.0.0.1",
+    "neighbors": [
+      "S1"
+    ]
+  },
+  {
+    "id": "B",
+    "port": 3301,
+    "ipAddress": "127.0.0.1",
+    "neighbors": [
+      "S1"
+    ]
+  },
+  {
+    "id": "C",
+    "port": 3302,
+    "ipAddress": "127.0.0.1",
+    "neighbors": [
+      "S3"
+    ]
+  },
+  {
+    "id": "D",
+    "port": 3303,
+    "ipAddress": "127.0.0.1",
+    "neighbors": [
+      "S3"
+    ]
+  },
+  {
+    "id": "S1",
+    "port": 3304,
+    "ipAddress": "127.0.0.1",
+    "neighbors": [
+      "A",
+      "B",
+      "S2"
+    ]
+  },
+  {
+    "id": "S2",
+    "port": 3305,
+    "ipAddress": "127.0.0.1",
+    "neighbors": [
+      "S1",
+      "S2"
+    ]
+  },
+  {
+    "id": "S3",
+    "port": 3306,
+    "ipAddress": "127.0.0.1",
+    "neighbors": [
+      "C",
+      "D",
+      "S2"
+    ]
+  }
+]
