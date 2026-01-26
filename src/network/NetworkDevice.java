@@ -1,13 +1,15 @@
+package network;
+
 import config.ConfigParser;
 import config.DeviceConfig;
 
-public abstract class NetworkDevice {
+abstract class NetworkDevice {
 	/// The ID provided as a command-line argument.
-	private final String id;
+	final String id;
 
 	/// The matching device config, including
 	/// port, IP address, and neighbors.
-	private DeviceConfig myConfig;
+	protected DeviceConfig myConfig;
 
 	protected NetworkDevice(String[] args) {
 		id = validateArgs(args);
