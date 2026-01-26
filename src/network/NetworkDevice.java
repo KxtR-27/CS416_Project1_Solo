@@ -3,6 +3,8 @@ package network;
 import config.ConfigParser;
 import config.DeviceConfig;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
@@ -11,6 +13,7 @@ import java.net.SocketException;
 /// @author KxtR-27 (Kat)
 /// @see Host
 /// @see Switch
+@SuppressWarnings("unused")
 abstract class NetworkDevice implements AutoCloseable {
 	/// The ID provided as a command-line argument.
 	final String id;
@@ -45,6 +48,18 @@ abstract class NetworkDevice implements AutoCloseable {
 		}
 
 		return config;
+	}
+
+	protected void sendMessage(MessageFrame messageFrame, DeviceConfig recipient) throws IOException {
+		DatagramPacket messagePacket = messageFrame.toPacket(recipient);
+		socket.send(messagePacket);
+	}
+
+	protected MessageFrame receiveMessage() throws IOException {
+		DatagramPacket messagePacket = new DatagramPacket(new byte[1024], 1024);
+		socket.receive(messagePacket);
+
+		return MessageFrame.fromPacket(messagePacket);
 	}
 
 	@Override
