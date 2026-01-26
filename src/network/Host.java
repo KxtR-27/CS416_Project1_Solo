@@ -5,7 +5,6 @@ import config.DeviceConfig;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Scanner;
 
@@ -31,35 +30,15 @@ public class Host extends NetworkDevice {
 	}
 
 	private void sendMessage(MessageFrame messageFrame) throws IOException {
-		byte[] messageBytes = messageFrame.toString().getBytes();
-		int messageLength = messageBytes.length;
-
-		InetAddress destinationIP = InetAddress.getByName(neighboringSwitch.ipAddress());
-
-		DatagramPacket messagePacket = new DatagramPacket(
-				messageBytes,
-				messageLength,
-				destinationIP,
-				neighboringSwitch.port()
-		);
+		DatagramPacket messagePacket = messageFrame.toPacket(neighboringSwitch);
 		socket.send(messagePacket);
 	}
 
-	private static class MessageFrame {
-		String sourceID;
-		String destinationID;
-		String message;
+	private MessageFrame receiveMessage() throws IOException {
+		DatagramPacket messagePacket = new DatagramPacket(new byte[1024], 1024);
+		socket.receive(messagePacket);
 
-		public MessageFrame(String sourceID, String destinationID, String message) {
-			this.sourceID = sourceID;
-			this.destinationID = destinationID;
-			this.message = message;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("%s:%s:%s", sourceID, destinationID, message);
-		}
+		return MessageFrame.fromPacket(messagePacket);
 	}
 
 	@Override

@@ -6,6 +6,11 @@ import config.DeviceConfig;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+/// A superclass with code shared between `Switch`es and `Host`s.
+///
+/// @author KxtR-27 (Kat)
+/// @see Host
+/// @see Switch
 abstract class NetworkDevice implements AutoCloseable {
 	/// The ID provided as a command-line argument.
 	final String id;
