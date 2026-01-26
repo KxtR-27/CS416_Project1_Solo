@@ -3,6 +3,7 @@ package network;
 import config.ConfigParser;
 import config.DeviceConfig;
 
+import java.net.SocketException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class Switch extends NetworkDevice {
 	private final List<SwitchTableEntry> switchTable;
 	private final Map<String, String> virtualPorts;
 
-	private Switch(String[] args) {
+	private Switch(String[] args) throws SocketException {
 		super(args);
 		switchTable = new ArrayList<>();
 		virtualPorts = new HashMap<>();
