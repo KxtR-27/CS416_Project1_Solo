@@ -30,8 +30,12 @@ public class Host extends NetworkDevice {
 	}
 
 	@Override
-	public void close() {
-		super.close();
+	protected void onOpen() {
+
+	}
+
+	@Override
+	protected void onClose() {
 		consoleScanner.close();
 	}
 }

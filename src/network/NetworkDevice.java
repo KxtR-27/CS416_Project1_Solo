@@ -4,9 +4,7 @@ import config.ConfigParser;
 import config.DeviceConfig;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.net.*;
 
 /// A superclass with code shared between `Switch`es and `Host`s.
 ///
@@ -64,8 +62,18 @@ abstract class NetworkDevice implements AutoCloseable {
 		return MessageFrame.fromPacket(messagePacket);
 	}
 
+	protected abstract void onOpen() throws IOException;
+
+	protected abstract void onClose();
+
+	public void open() throws IOException {
+		onOpen();
+	}
+
 	@Override
 	public void close() {
 		socket.close();
+		onClose();
 	}
+
 }

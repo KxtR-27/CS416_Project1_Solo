@@ -34,7 +34,9 @@ public class Switch extends NetworkDevice {
 	}
 
 	private void transferMessage() throws IOException {
+		// blocking call
 		MessageFrame message = receiveMessage();
+		System.out.printf("Received message: \"%s\"%n", message);
 
 		if (!inTable(message.sourceID)) {
 			addTableEntry(message.sourceID);
@@ -71,6 +73,19 @@ public class Switch extends NetworkDevice {
 
 		switchTable.forEach((deviceID, entry) ->
 				System.out.printf("%9s | %s%n", deviceID, entry));
+	}
+
+	@Override
+	protected void onOpen() throws IOException {
+		// by design, the loop can only be manually interrupted
+		//noinspection InfiniteLoopStatement
+		while (true)
+			transferMessage();
+	}
+
+	@Override
+	protected void onClose() {
+
 	}
 
 	private static class SwitchTableEntry {
