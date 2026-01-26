@@ -6,7 +6,7 @@ import config.DeviceConfig;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-abstract class NetworkDevice {
+abstract class NetworkDevice implements AutoCloseable {
 	/// The ID provided as a command-line argument.
 	final String id;
 
@@ -40,5 +40,10 @@ abstract class NetworkDevice {
 		}
 
 		return config;
+	}
+
+	@Override
+	public void close() {
+		socket.close();
 	}
 }

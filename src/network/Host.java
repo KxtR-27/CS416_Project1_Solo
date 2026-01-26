@@ -62,7 +62,9 @@ public class Host extends NetworkDevice {
 		}
 	}
 
-	static void main() {
-
+	@Override
+	public void close() {
+		super.close();
+		consoleScanner.close();
 	}
 }
