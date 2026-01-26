@@ -20,7 +20,7 @@ import java.util.Map;
 /// @see #getConfigForDevice(String)
 /// @see DeviceConfig
 @SuppressWarnings("unused" /* because it's used later based on the rubric. */)
-class ConfigParser {
+public class ConfigParser {
 	/// The Gson object used in conjunction with a JsonReader to read data from the `config.json` file.
 	private static final Gson GSON = new Gson();
 
