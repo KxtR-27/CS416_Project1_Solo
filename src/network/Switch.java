@@ -44,30 +44,42 @@ public class Switch extends NetworkDevice {
 			floodMessage(message);
 	}
 
-	private void floodMessage(MessageFrame message) throws IOException {
-		for (String neighbor : myConfig.neighbors())
-			if (!neighbor.equals(message.sourceID))
-				sendMessage(message, neighbor);
-	}
-
 	private boolean inTable(String deviceID) {
 		return switchTable.containsKey(deviceID);
 	}
 
 	private void addTableEntry(String deviceID) {
-		if (switchTable.containsKey(deviceID))
-			switchTable.get(deviceID).refresh();
-		else
-			switchTable.put(deviceID, new SwitchTableEntry(virtualPorts.get(deviceID)));
-
-		System.out.printf("%s%n", switchTable);
+		switchTable.put(deviceID, new SwitchTableEntry(virtualPorts.get(deviceID)));
 	}
 
 	private void printSwitchTable() {
-		System.out.printf("Device ID | %15s | Time", "Virtual Port%n");
+		System.out.printf("Switch %s:%n", id);
+		System.out.printf("Device ID | %-15s | Time%n", "Virtual Port");
 
 		switchTable.forEach((deviceID, entry) ->
-				System.out.printf("%9s | %s%n", deviceID, entry));
+				System.out.printf("%-9s | %s%n", deviceID, entry));
+	}
+
+	private void floodMessage(MessageFrame message) throws IOException {
+		boolean fromMyNeighbor = false;
+		boolean toMyNeighbor = false;
+
+		for (String neighbor : myConfig.neighbors()) {
+			if (neighbor.equals(message.sourceID))
+				fromMyNeighbor = true;
+			else if (neighbor.equals(message.destinationID))
+				toMyNeighbor = true;
+		}
+
+		// FIXME: correct flood routing
+		boolean couldFloodInfinitely = !fromMyNeighbor && !toMyNeighbor;
+
+		if (couldFloodInfinitely)
+			return;
+
+		for (String neighbor : myConfig.neighbors())
+			if (!message.sourceID.equals(neighbor))
+				sendMessage(message, neighbor);
 	}
 
 	@Override
