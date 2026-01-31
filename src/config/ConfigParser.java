@@ -20,7 +20,6 @@ import java.util.Map;
 /// @author KxtR-27 (Kat)
 /// @see #getConfigForDevice(String)
 /// @see DeviceConfig
-@SuppressWarnings("unused" /* because it's used later based on the rubric. */)
 public class ConfigParser {
 	private static final Gson GSON = new Gson();
 
@@ -29,7 +28,6 @@ public class ConfigParser {
 	private static TopologyGraph topology;
 
 
-	@SuppressWarnings("unused" /* because it's used later on based upon the rubric.*/)
 	public static DeviceConfig getConfigForDevice(String id) {
 		updateConfigMap();
 		return devices.get(id);
@@ -72,10 +70,10 @@ public class ConfigParser {
 
 	private static void printErrorWithMessage(Exception e) {
 		String extraMessage = switch (e) {
-			case JsonIOException _jioe -> "Unable to read config file.";
-			case JsonSyntaxException _jse -> "Could not correctly parse config file.";
-			case FileNotFoundException _fnfe -> "Config file not found.";
-			case IOException _ioe -> "Unexpected file-related issue occurred.";
+			case JsonIOException _ -> "Unable to read config file.";
+			case JsonSyntaxException _ -> "Could not correctly parse config file.";
+			case FileNotFoundException _ -> "Config file not found.";
+			case IOException _ -> "Unexpected file-related issue occurred.";
 
 			default -> "Unhandled exception occurred.";
 		};

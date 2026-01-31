@@ -13,10 +13,14 @@ public class MessageFrame {
 	String message;
 
 	public static MessageFrame fromPacket(DatagramPacket messagePacket) {
-		byte[] contents = Arrays.copyOf(messagePacket.getData(), messagePacket.getLength());
-
-		String[] frameData = new String(contents).split(":");
-		return new MessageFrame(frameData[0], frameData[1], frameData[2]);
+		try {
+			byte[] contents = Arrays.copyOf(messagePacket.getData(), messagePacket.getLength());
+			String[] frameData = new String(contents).split(":");
+			return new MessageFrame(frameData[0], frameData[1], frameData[2]);
+		}
+		catch (RuntimeException e) {
+			throw new IllegalArgumentException("Attempted to convert a packet that is not a message.", e);
+		}
 	}
 
 	public MessageFrame(String sourceID, String destinationID, String message) {
