@@ -49,12 +49,13 @@ public class Switch extends NetworkDevice {
 	}
 
 	private void addTableEntry(String deviceID) {
+		virtualPorts.putIfAbsent(deviceID, virtualPorts.get(ConfigParser.previousRecipient(deviceID, id)));
 		switchTable.put(deviceID, new SwitchTableEntry(virtualPorts.get(deviceID)));
 	}
 
 	private void printSwitchTable() {
 		System.out.printf("Switch %s:%n", id);
-		System.out.printf("Device ID | %-15s | Time%n", "Virtual Port");
+		System.out.printf("Device ID | %-21s | Time%n", "Virtual Port");
 
 		switchTable.forEach((deviceID, entry) ->
 				System.out.printf("%-9s | %s%n", deviceID, entry));
@@ -62,17 +63,11 @@ public class Switch extends NetworkDevice {
 
 	// When the source of the message is not in the table...
 	private void floodMessage(MessageFrame message) throws IOException {
-		// FIXME: core switch and other switches flood each other infinitely
-		// I know it has something to do with the virtual ports, but I don't know.
-		String portNotToFlood = virtualPorts.get(message.sourceID);
+		String previousRecipient = ConfigParser.previousRecipient(message.sourceID, id);
 
-		for (String neighbor : neighbors) {
-			System.out.printf("port of neighbor: %s%n", virtualPorts.get(neighbor));
-			System.out.printf("port not to flood: %s%n", portNotToFlood);
-
-			if (!virtualPorts.get(neighbor).equals(portNotToFlood))
+		for (String neighbor : neighbors)
+			if (!neighbor.equals(previousRecipient))
 				sendMessage(message, neighbor);
-		}
 	}
 
 	@Override
@@ -108,7 +103,7 @@ public class Switch extends NetworkDevice {
 
 		@Override
 		public String toString() {
-			return String.format("%15s | %s", switchPort, time.format(timeFormatter));
+			return String.format("%-21s | %s", switchPort, time.format(timeFormatter));
 		}
 	}
 
