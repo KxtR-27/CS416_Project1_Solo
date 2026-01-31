@@ -16,14 +16,21 @@ abstract class NetworkDevice implements AutoCloseable {
 	final String id;
 
 	/// The matching device config, including port, IP address, and neighbors.
-	protected DeviceConfig myConfig;
+	protected int port;
+	protected String ipAddress;
+	protected String[] neighbors;
 
 	/// The socket that the device uses to send and receive messages.
 	protected DatagramSocket socket;
 
 	protected NetworkDevice(String[] args) throws SocketException {
 		id = validateArgs(args);
-		myConfig = validateMyConfig();
+		DeviceConfig myConfig = validateMyConfig();
+
+		port = myConfig.port();
+		ipAddress = myConfig.ipAddress();
+		neighbors = ConfigParser.getNeighborsOfDevice(id);
+
 		socket = new DatagramSocket(myConfig.port());
 	}
 

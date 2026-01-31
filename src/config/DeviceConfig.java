@@ -1,7 +1,5 @@
 package config;
 
-import java.util.Arrays;
-
 /// Stores configuration information for network devices except for the device ID.
 /// Device IDs are passed into and handled by the `ConfigParser`.
 ///
@@ -10,20 +8,15 @@ import java.util.Arrays;
 ///
 /// @param port      The port on which the host or switch operates
 /// @param ipAddress The IP address on which the host or switch operates
-/// @param neighbors The "linked" host and switches of this device in the topology
 ///
 /// @author KxtR-27 (Kat)
 /// @see ConfigParser
 public record DeviceConfig(
 		int port,
-		String ipAddress,
-		String[] neighbors
+		String ipAddress
 ) {
 	@Override
 	public String toString() {
-		return String.format(
-				"%s:%s | neighbors: %s",
-				ipAddress, port, Arrays.toString(neighbors)
-		);
+		return String.format("%s:%s", ipAddress, port);
 	}
 }

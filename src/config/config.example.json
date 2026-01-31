@@ -1,63 +1,52 @@
-[
-  {
-    "id": "A",
-    "port": 3300,
-    "ipAddress": "127.0.0.1",
-    "neighbors": [
-      "S1"
+{
+    "devices": {
+        "A": {
+            "port": 3300,
+            "ipAddress": "127.0.0.1"
+        },
+        "B": {
+            "port": 3301,
+            "ipAddress": "127.0.0.1"
+        },
+        "C": {
+            "port": 3302,
+            "ipAddress": "127.0.0.1"
+        },
+        "D": {
+            "port": 3303,
+            "ipAddress": "127.0.0.1"
+        },
+        "S1": {
+            "port": 3304,
+            "ipAddress": "127.0.0.1"
+        },
+        "S2": {
+            "port": 3305,
+            "ipAddress": "127.0.0.1"
+        },
+        "S3": {
+            "port": 3306,
+            "ipAddress": "127.0.0.1"
+        }
+    },
+    "links": [
+        {
+            "A": "S1"
+        },
+        {
+            "B": "S1"
+        },
+        {
+            "C": "S3"
+        },
+        {
+            "D": "S3"
+        },
+        {
+            "S2": "S1"
+        },
+        {
+            "S2": "S3"
+        }
     ]
-  },
-  {
-    "id": "B",
-    "port": 3301,
-    "ipAddress": "127.0.0.1",
-    "neighbors": [
-      "S1"
-    ]
-  },
-  {
-    "id": "C",
-    "port": 3302,
-    "ipAddress": "127.0.0.1",
-    "neighbors": [
-      "S3"
-    ]
-  },
-  {
-    "id": "D",
-    "port": 3303,
-    "ipAddress": "127.0.0.1",
-    "neighbors": [
-      "S3"
-    ]
-  },
-  {
-    "id": "S1",
-    "port": 3304,
-    "ipAddress": "127.0.0.1",
-    "neighbors": [
-      "A",
-      "B",
-      "S2"
-    ]
-  },
-  {
-    "id": "S2",
-    "port": 3305,
-    "ipAddress": "127.0.0.1",
-    "neighbors": [
-      "S1",
-      "S2"
-    ]
-  },
-  {
-    "id": "S3",
-    "port": 3306,
-    "ipAddress": "127.0.0.1",
-    "neighbors": [
-      "C",
-      "D",
-      "S2"
-    ]
-  }
-]
+}

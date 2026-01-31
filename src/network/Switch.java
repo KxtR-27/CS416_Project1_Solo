@@ -18,11 +18,11 @@ public class Switch extends NetworkDevice {
 		super(args);
 		switchTable = new HashMap<>();
 		virtualPorts = new HashMap<>();
-		formatVirtualPorts();
+		configureVirtualPorts();
 	}
 
-	private void formatVirtualPorts() {
-		for (String neighborID : myConfig.neighbors()) {
+	private void configureVirtualPorts() {
+		for (String neighborID : neighbors) {
 			DeviceConfig neighbor = ConfigParser.getConfigForDevice(neighborID);
 
 			String virtualPort = String.format(
@@ -60,26 +60,19 @@ public class Switch extends NetworkDevice {
 				System.out.printf("%-9s | %s%n", deviceID, entry));
 	}
 
+	// When the source of the message is not in the table...
 	private void floodMessage(MessageFrame message) throws IOException {
-		boolean fromMyNeighbor = false;
-		boolean toMyNeighbor = false;
+		// FIXME: core switch and other switches flood each other infinitely
+		// I know it has something to do with the virtual ports, but I don't know.
+		String portNotToFlood = virtualPorts.get(message.sourceID);
 
-		for (String neighbor : myConfig.neighbors()) {
-			if (neighbor.equals(message.sourceID))
-				fromMyNeighbor = true;
-			else if (neighbor.equals(message.destinationID))
-				toMyNeighbor = true;
-		}
+		for (String neighbor : neighbors) {
+			System.out.printf("port of neighbor: %s%n", virtualPorts.get(neighbor));
+			System.out.printf("port not to flood: %s%n", portNotToFlood);
 
-		// FIXME: correct flood routing
-		boolean couldFloodInfinitely = !fromMyNeighbor && !toMyNeighbor;
-
-		if (couldFloodInfinitely)
-			return;
-
-		for (String neighbor : myConfig.neighbors())
-			if (!message.sourceID.equals(neighbor))
+			if (!virtualPorts.get(neighbor).equals(portNotToFlood))
 				sendMessage(message, neighbor);
+		}
 	}
 
 	@Override
