@@ -1,7 +1,5 @@
 package config;
 
-import java.util.Arrays;
-
 /// Stores configuration information for network devices except for the device ID.
 /// Device IDs are passed into and handled by the `ConfigParser`.
 ///
@@ -17,14 +15,4 @@ public record DeviceConfig(
 		int port,
 		String ipAddress,
 		String[] neighbors
-) {
-	@Override
-	public String toString() {
-		return String.format(
-				"%s:%d | %s",
-				ipAddress,
-				port,
-				Arrays.toString(neighbors)
-		);
-	}
-}
+) {}

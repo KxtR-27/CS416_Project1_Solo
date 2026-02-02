@@ -99,10 +99,6 @@ public class ConfigParser {
 			Map<String, RawDeviceConfig> devices,
 			Map<String, String> links
 	) {
-		@Override
-		public String toString() {
-			return String.format("%s%n%s", devices, links);
-		}
 	}
 
 	private record RawDeviceConfig(

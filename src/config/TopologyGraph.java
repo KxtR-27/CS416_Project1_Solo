@@ -2,6 +2,8 @@ package config;
 
 import java.util.*;
 
+/// Custom graph structure capable of pathfinding from one topology device to another
+/// @author KxtR-27 (Kat)
 class TopologyGraph {
 	private final Map<String, Set<String>> graph = new HashMap<>();
 
@@ -81,11 +83,5 @@ class TopologyGraph {
 		}
 
 		return path;
-	}
-
-
-	@Override
-	public String toString() {
-		return graph.toString();
 	}
 }
