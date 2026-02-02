@@ -49,8 +49,6 @@ abstract class NetworkDevice implements AutoCloseable {
 	}
 
 	protected void sendMessage(MessageFrame messageFrame, String recipientID) throws IOException {
-		System.out.printf("Sending message %s to %s%n", messageFrame, messageFrame.destinationID);
-
 		DeviceConfig recipient = ConfigParser.getConfigForDevice(recipientID);
 		DatagramPacket messagePacket = messageFrame.toPacket(recipient);
 		socket.send(messagePacket);

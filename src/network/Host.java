@@ -25,7 +25,7 @@ public class Host extends NetworkDevice {
 		System.out.printf("Please enter the ID of the host to send to:%n>> ");
 		String destinationID = consoleScanner.nextLine();
 
-		System.out.printf("%n");
+		System.out.printf("Message sent!%n%n");
 		return new MessageFrame(this.id, destinationID, message);
 	}
 
@@ -46,7 +46,6 @@ public class Host extends NetworkDevice {
 		running = false;
 	}
 
-
 	private class ReceiverTask implements Runnable {
 		@Override
 		public void run() {
@@ -58,13 +57,14 @@ public class Host extends NetworkDevice {
 					socket.receive(packet);
 					MessageFrame messageFrame = MessageFrame.fromPacket(packet);
 
-					System.out.printf("Message received: \"%s\"%n", messageFrame);
-					System.out.printf("Source Device: %s%n", messageFrame.sourceID);
 
-					if (!messageFrame.destinationID.equals(id)) {
-						System.out.printf("I am not the intended recipient! Did a switch flood?%n");
-						System.out.printf("(my ID: %s | destination ID: %s)%n", id, messageFrame.destinationID);
-					}
+					if (!messageFrame.destinationID.equals(id))
+						System.out.printf(
+								"MAC address mismatch (destination MAC: %s | my MAC: %s)%n",
+								messageFrame.destinationID, id
+						);
+					else
+						System.out.printf("Received message:%n%s%n", messageFrame);
 				}
 				catch (IOException e) {
 					throw new RuntimeException(e);
