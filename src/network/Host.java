@@ -49,7 +49,7 @@ public class Host extends NetworkDevice {
 	private class ReceiverTask implements Runnable {
 		@Override
 		public void run() {
-			// executor.shutdown() handles the end of the loop
+			// the loop is intentionally broken manually by interrupting the program
 			//noinspection InfiniteLoopStatement
 			while (true) {
 				try {
@@ -60,11 +60,11 @@ public class Host extends NetworkDevice {
 
 					if (!messageFrame.destinationID.equals(id))
 						System.out.printf(
-								"MAC address mismatch (destination MAC: %s | my MAC: %s)%n",
+								"%nMAC address mismatch (destination MAC: %s | my MAC: %s)%n>> ",
 								messageFrame.destinationID, id
 						);
 					else
-						System.out.printf("Received message:%n%s%n", messageFrame);
+						System.out.printf("%nReceived message:%n%s%n>> ", messageFrame);
 				}
 				catch (IOException e) {
 					throw new RuntimeException(e);

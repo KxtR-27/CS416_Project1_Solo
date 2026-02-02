@@ -39,7 +39,7 @@ public class Switch extends NetworkDevice {
 		}
 
 		if (inTable(message.destinationID))
-			sendMessage(message, message.destinationID);
+			sendMessage(message, ConfigParser.nextRecipient(message.destinationID, id));
 		else
 			floodMessage(message);
 	}
@@ -55,10 +55,13 @@ public class Switch extends NetworkDevice {
 
 	private void printSwitchTable() {
 		System.out.printf("Switch %s:%n", id);
+		System.out.printf("%s%n", "-".repeat(52));
 		System.out.printf("Device ID | %-21s | Time%n", "Virtual Port");
 
 		switchTable.forEach((deviceID, entry) ->
 				System.out.printf("%-9s | %s%n", deviceID, entry));
+
+		System.out.printf("%n");
 	}
 
 	// When the source of the message is not in the table...
@@ -72,7 +75,7 @@ public class Switch extends NetworkDevice {
 
 	@Override
 	protected void onOpen() throws IOException {
-		// by design, the loop can only be manually interrupted
+		// the loop is intentionally broken manually by interrupting the program
 		//noinspection InfiniteLoopStatement
 		while (true) {
 			MessageFrame message = receiveMessage();

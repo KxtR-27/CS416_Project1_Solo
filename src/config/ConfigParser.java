@@ -42,6 +42,13 @@ public class ConfigParser {
 		return path.get(path.size() - 2);
 	}
 
+	public static String nextRecipient(String destinationID, String myID) {
+		updateConfigMap();
+
+		List<String> path = topology.findShortestPathBetween(destinationID, myID);
+		return path.get(path.size() - 2);
+	}
+
 	private static void updateConfigMap() {
 		// can be null if error occurs
 		ConfigSnapshot snapshot = loadConfigFile();
@@ -106,7 +113,7 @@ public class ConfigParser {
 		System.out.printf("%s%n", topology);
 
 		String sourceID = "A";
-		String destinationID = "S3";
+		String destinationID = "D";
 
 		System.out.printf(
 				"%nPath from %s to %s:%n%s%n",
@@ -114,9 +121,33 @@ public class ConfigParser {
 				topology.findShortestPathBetween(sourceID, destinationID)
 		);
 		System.out.printf(
-				"Previous recipient (before %s) of message from %s:%n%s%n",
-				sourceID, destinationID,
+				"Path from %s to %s:%n%s%n",
+				destinationID, sourceID,
+				topology.findShortestPathBetween(destinationID, sourceID)
+		);
+
+		System.out.printf(
+				"%nPrevious recipient (before %s) of message from %s:%n%s%n",
+				destinationID, sourceID,
 				previousRecipient(sourceID, destinationID)
 		);
+		System.out.printf(
+				"Next recipient (after %s) of message to %s:%n%s%n",
+				sourceID, destinationID,
+				nextRecipient(destinationID, sourceID)
+		);
+
+		System.out.printf("%nRecipient line:%n");
+		String currentLocation = destinationID;
+
+		try {
+			while ((currentLocation = previousRecipient(sourceID, currentLocation)) != null) {
+				System.out.printf("%s%n", currentLocation);
+				System.out.printf("End of the line%n");
+			}
+		}
+		catch (Exception e) {
+			System.out.printf("End of the line%n");
+		}
 	}
 }
