@@ -22,7 +22,7 @@ public class Switch extends NetworkDevice {
 	}
 
 	private void configureVirtualPorts() {
-		for (String neighborID : neighbors) {
+		for (String neighborID : myConfig.neighbors()) {
 			DeviceConfig neighbor = ConfigParser.getConfigForDevice(neighborID);
 
 			String virtualPort = String.format(
@@ -65,7 +65,7 @@ public class Switch extends NetworkDevice {
 	private void floodMessage(MessageFrame message) throws IOException {
 		String previousRecipient = ConfigParser.previousRecipient(message.sourceID, id);
 
-		for (String neighbor : neighbors)
+		for (String neighbor : myConfig.neighbors())
 			if (!neighbor.equals(previousRecipient))
 				sendMessage(message, neighbor);
 	}

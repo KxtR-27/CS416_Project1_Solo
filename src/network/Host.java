@@ -35,7 +35,7 @@ public class Host extends NetworkDevice {
 
 		while (running) {
 			MessageFrame message = scanMessage();
-			sendMessage(message, neighbors[0]);
+			sendMessage(message, myConfig.neighbors()[0]);
 		}
 	}
 

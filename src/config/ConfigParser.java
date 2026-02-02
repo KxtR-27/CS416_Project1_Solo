@@ -14,11 +14,14 @@ import java.util.Map;
 
 /// Parses and retrieves device configurations from a `config.json` file in the same directory.
 ///
-/// **Unless you are a developer, you should <u>_only_</u> need to use the static
-/// `getConfigForDevice()` method.**
+/// **Unless you are a developer, you should <u>_only_</u> need to use:**
+/// - `ConfigParser.getConfigForDevice()` - get device port, IP, and neighbors
+/// - `ConfigParser.previousRecipient()` - a clearer way for intermediary
+///   switches to know who NOT to flood (looking at you, S2)
 ///
 /// @author KxtR-27 (Kat)
 /// @see #getConfigForDevice(String)
+/// @see #previousRecipient(String, String)
 /// @see DeviceConfig
 public class ConfigParser {
 	private static final Gson GSON = new Gson();
@@ -30,11 +33,6 @@ public class ConfigParser {
 	public static DeviceConfig getConfigForDevice(String id) {
 		updateConfigMap();
 		return devices.get(id);
-	}
-
-	public static String[] getNeighborsOfDevice(String id) {
-		updateConfigMap();
-		return topology.getAdjacentDevicesOf(id);
 	}
 
 	public static String previousRecipient(String sourceID, String myID) {
@@ -56,7 +54,7 @@ public class ConfigParser {
 		devices.clear();
 		snapshot.devices.forEach((id, rawConfig) -> devices.put(
 				id, new DeviceConfig(
-						rawConfig.port, rawConfig.ipAddress, getNeighborsOfDevice(id)
+						rawConfig.port, rawConfig.ipAddress, topology.getAdjacentDevicesOf(id)
 				)
 		));
 	}
