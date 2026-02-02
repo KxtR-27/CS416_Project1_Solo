@@ -33,13 +33,13 @@ public class Switch extends NetworkDevice {
 	}
 
 	private void transferMessage(MessageFrame message) throws IOException {
-		if (!inTable(message.sourceID)) {
-			addTableEntry(message.sourceID);
+		if (!inTable(message.sourceID())) {
+			addTableEntry(message.sourceID());
 			printSwitchTable();
 		}
 
-		if (inTable(message.destinationID))
-			sendMessage(message, ConfigParser.nextRecipient(message.destinationID, id));
+		if (inTable(message.destinationID()))
+			sendMessage(message, ConfigParser.nextRecipient(message.destinationID(), id));
 		else
 			floodMessage(message);
 	}
@@ -66,7 +66,7 @@ public class Switch extends NetworkDevice {
 
 	// When the source of the message is not in the table...
 	private void floodMessage(MessageFrame message) throws IOException {
-		String previousRecipient = ConfigParser.previousRecipient(message.sourceID, id);
+		String previousRecipient = ConfigParser.previousRecipient(message.sourceID(), id);
 
 		for (String neighbor : myConfig.neighbors())
 			if (!neighbor.equals(previousRecipient))

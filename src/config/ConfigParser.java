@@ -15,13 +15,16 @@ import java.util.Map;
 /// Parses and retrieves device configurations from a `config.json` file in the same directory.
 ///
 /// **Unless you are a developer, you should <u>_only_</u> need to use:**
-/// - `ConfigParser.getConfigForDevice()` - get device port, IP, and neighbors
+/// - `ConfigParser.getConfigForDevice()` - get device port, IP, and neighbors in a `DeviceConfig`
 /// - `ConfigParser.previousRecipient()` - a clearer way for intermediary
 ///   switches to know who NOT to flood (looking at you, S2)
+/// - `ConfigParser.nextRecipient` - a clear way to know who to transfer the message to.
+///   For some reason, messages got lost in translation before this method.
 ///
 /// @author KxtR-27 (Kat)
 /// @see #getConfigForDevice(String)
 /// @see #previousRecipient(String, String)
+/// @see #nextRecipient(String, String)
 /// @see DeviceConfig
 public class ConfigParser {
 	private static final Gson GSON = new Gson();
@@ -61,7 +64,9 @@ public class ConfigParser {
 		devices.clear();
 		snapshot.devices.forEach((id, rawConfig) -> devices.put(
 				id, new DeviceConfig(
-						rawConfig.port, rawConfig.ipAddress, topology.getAdjacentDevicesOf(id)
+						rawConfig.port,
+						rawConfig.ipAddress,
+						topology.getAdjacentDevicesOf(id)
 				)
 		));
 	}

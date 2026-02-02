@@ -58,10 +58,10 @@ public class Host extends NetworkDevice {
 					MessageFrame messageFrame = MessageFrame.fromPacket(packet);
 
 
-					if (!messageFrame.destinationID.equals(id))
+					if (!messageFrame.destinationID().equals(id))
 						System.out.printf(
 								"%nMAC address mismatch (destination MAC: %s | my MAC: %s)%n>> ",
-								messageFrame.destinationID, id
+								messageFrame.destinationID(), id
 						);
 					else
 						System.out.printf("%nReceived message:%n%s%n>> ", messageFrame);

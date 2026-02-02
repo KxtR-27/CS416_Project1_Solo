@@ -7,11 +7,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
-public class MessageFrame {
-	String sourceID;
-	String destinationID;
-	String message;
-
+public record MessageFrame(
+		String sourceID,
+		String destinationID,
+		String message
+) {
 	public static MessageFrame fromPacket(DatagramPacket messagePacket) {
 		try {
 			byte[] contents = Arrays.copyOf(messagePacket.getData(), messagePacket.getLength());
@@ -23,24 +23,18 @@ public class MessageFrame {
 		}
 	}
 
-	public MessageFrame(String sourceID, String destinationID, String message) {
-		this.sourceID = sourceID;
-		this.destinationID = destinationID;
-		this.message = message;
-	}
-
 	// recipient =/= destination
-	public DatagramPacket toPacket(DeviceConfig recipient) throws UnknownHostException {
+	public DatagramPacket toPacketFor(DeviceConfig nextRecipient) throws UnknownHostException {
 		byte[] messageBytes = this.toString().getBytes();
 		int messageLength = messageBytes.length;
 
-		InetAddress recipientAddress = InetAddress.getByName(recipient.ipAddress());
+		InetAddress recipientAddress = InetAddress.getByName(nextRecipient.ipAddress());
 
 		return new DatagramPacket(
 				messageBytes,
 				messageLength,
 				recipientAddress,
-				recipient.port()
+				nextRecipient.port()
 		);
 	}
 
