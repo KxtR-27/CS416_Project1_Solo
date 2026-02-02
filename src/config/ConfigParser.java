@@ -23,10 +23,9 @@ import java.util.Map;
 public class ConfigParser {
 	private static final Gson GSON = new Gson();
 
-	private static Map<String, DeviceConfig> devices = new HashMap<>(7);
-
 	private static TopologyGraph topology;
 
+	private static final Map<String, DeviceConfig> devices = new HashMap<>(7);
 
 	public static DeviceConfig getConfigForDevice(String id) {
 		updateConfigMap();
@@ -45,7 +44,6 @@ public class ConfigParser {
 		return path.get(path.size() - 2);
 	}
 
-
 	private static void updateConfigMap() {
 		// can be null if error occurs
 		ConfigSnapshot snapshot = loadConfigFile();
@@ -53,8 +51,14 @@ public class ConfigParser {
 		if (snapshot == null)
 			return;
 
-		devices = snapshot.devices();
 		topology = new TopologyGraph(snapshot.links);
+
+		devices.clear();
+		snapshot.devices.forEach((id, rawConfig) -> devices.put(
+				id, new DeviceConfig(
+						rawConfig.port, rawConfig.ipAddress, getNeighborsOfDevice(id)
+				)
+		));
 	}
 
 	private static ConfigSnapshot loadConfigFile() {
@@ -81,15 +85,20 @@ public class ConfigParser {
 		System.err.printf("%s%n", extraMessage);
 	}
 
-
 	private record ConfigSnapshot(
-			Map<String, DeviceConfig> devices,
+			Map<String, RawDeviceConfig> devices,
 			Map<String, String> links
 	) {
 		@Override
 		public String toString() {
 			return String.format("%s%n%s", devices, links);
 		}
+	}
+
+	private record RawDeviceConfig(
+			String ipAddress,
+			int port
+	) {
 	}
 
 	static void main() {
@@ -101,11 +110,13 @@ public class ConfigParser {
 		String sourceID = "A";
 		String destinationID = "S3";
 
-		System.out.printf("%nPath from %s to %s:%n%s%n",
+		System.out.printf(
+				"%nPath from %s to %s:%n%s%n",
 				sourceID, destinationID,
 				topology.findShortestPathBetween(sourceID, destinationID)
 		);
-		System.out.printf("Previous recipient (before %s) of message from %s:%n%s%n",
+		System.out.printf(
+				"Previous recipient (before %s) of message from %s:%n%s%n",
 				sourceID, destinationID,
 				previousRecipient(sourceID, destinationID)
 		);
