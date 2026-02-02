@@ -27,17 +27,24 @@ import java.util.Map;
 /// @see #nextRecipient(String, String)
 /// @see DeviceConfig
 public class ConfigParser {
+	/// GSON object used to parse the `config.json` file.
 	private static final Gson GSON = new Gson();
 
+	/// A custom graph structure capable of getting neighbors and pathfinding.
+	/// Constructed from the `config.json` file.
 	private static TopologyGraph topology;
 
+	/// The configurations for every device in the `config.json` file.
 	private static final Map<String, DeviceConfig> devices = new HashMap<>(7);
 
+	/// Returns a record containing the port, IP address, and neighbors of a given device by its ID.
 	public static DeviceConfig getConfigForDevice(String id) {
 		updateConfigMap();
 		return devices.get(id);
 	}
 
+	/// Uses the topology to trace a path from the source device to "my" device
+	/// and returns the neighbor that received the message just before.
 	public static String previousRecipient(String sourceID, String myID) {
 		updateConfigMap();
 
@@ -45,6 +52,8 @@ public class ConfigParser {
 		return path.get(path.size() - 2);
 	}
 
+	/// Uses the topology to trace a path from the destination device to "my" device
+	/// and returns the neighbor that should receive the message next to reach the destination.
 	public static String nextRecipient(String destinationID, String myID) {
 		updateConfigMap();
 
@@ -52,6 +61,7 @@ public class ConfigParser {
 		return path.get(path.size() - 2);
 	}
 
+	/// Reloads/reparses the `config.json` file just in case it was changed during runtime.
 	private static void updateConfigMap() {
 		// can be null if error occurs
 		ConfigSnapshot snapshot = loadConfigFile();
@@ -71,6 +81,9 @@ public class ConfigParser {
 		));
 	}
 
+	/// Uses GSON to convert the `config.json` file to
+	/// a map of devices
+	/// and a map of topological edges for the graph.
 	private static ConfigSnapshot loadConfigFile() {
 		// try-with-resources automatically closes the readers after using them
 		try (JsonReader reader = new JsonReader(new FileReader("src/config/config.json"))) {
@@ -82,6 +95,8 @@ public class ConfigParser {
 		}
 	}
 
+	/// Should an error occur in `#loadConfigFile`,
+	/// print a helpful message along with the error.
 	private static void printErrorWithMessage(Exception e) {
 		String extraMessage = switch (e) {
 			case JsonIOException _ -> "Unable to read config file.";
@@ -95,18 +110,21 @@ public class ConfigParser {
 		System.err.printf("%s%n", extraMessage);
 	}
 
+	/// Harbors an effectively identical structure to that of `config.json`
+	/// to easily convert the json data to an object.
 	private record ConfigSnapshot(
 			Map<String, RawDeviceConfig> devices,
 			Map<String, String> links
-	) {
-	}
+	) {}
 
+	/// Harbors an effectively identical structure to that of the device values in the `config.json` file.
 	private record RawDeviceConfig(
 			String ipAddress,
 			int port
 	) {
 	}
 
+	/// Test driver
 	static void main() {
 		updateConfigMap();
 
