@@ -115,7 +115,8 @@ public class ConfigParser {
 	private record ConfigSnapshot(
 			Map<String, RawDeviceConfig> devices,
 			Map<String, String> links
-	) {}
+	) {
+	}
 
 	/// Harbors an effectively identical structure to that of the device values in the `config.json` file.
 	private record RawDeviceConfig(
@@ -127,7 +128,6 @@ public class ConfigParser {
 	/// Test driver
 	static void main() {
 		updateConfigMap();
-
 		System.out.printf("%n%s%n", devices);
 		System.out.printf("%s%n", topology);
 
@@ -135,37 +135,32 @@ public class ConfigParser {
 		String destinationID = "D";
 
 		System.out.printf(
-				"%nPath from %s to %s:%n%s%n",
-				sourceID, destinationID,
+				"%nPath from %s to %s:%n%s%n", sourceID, destinationID,
 				topology.findShortestPathBetween(sourceID, destinationID)
 		);
 		System.out.printf(
-				"Path from %s to %s:%n%s%n",
-				destinationID, sourceID,
+				"Path from %s to %s:%n%s%n", destinationID, sourceID,
 				topology.findShortestPathBetween(destinationID, sourceID)
 		);
 
 		System.out.printf(
 				"%nPrevious recipient (before %s) of message from %s:%n%s%n",
-				destinationID, sourceID,
-				previousRecipient(sourceID, destinationID)
+				destinationID, sourceID, previousRecipient(sourceID, destinationID)
 		);
 		System.out.printf(
 				"Next recipient (after %s) of message to %s:%n%s%n",
-				sourceID, destinationID,
-				nextRecipient(destinationID, sourceID)
+				sourceID, destinationID, nextRecipient(destinationID, sourceID)
 		);
 
 		System.out.printf("%nRecipient line:%n");
 		String currentLocation = destinationID;
 
 		try {
-			while ((currentLocation = previousRecipient(sourceID, currentLocation)) != null) {
+			while ((currentLocation = previousRecipient(sourceID, currentLocation)) != null)
 				System.out.printf("%s%n", currentLocation);
-				System.out.printf("End of the line%n");
-			}
 		}
-		catch (Exception e) {
+		catch (IndexOutOfBoundsException _) {}
+		finally {
 			System.out.printf("End of the line%n");
 		}
 	}

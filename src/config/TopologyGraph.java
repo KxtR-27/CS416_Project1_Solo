@@ -4,21 +4,20 @@ import java.util.*;
 
 /// A custom graph structure capable of pathfinding from one topology device to another.
 /// Used only in the `ConfigParser`.
+///
 /// @author KxtR-27 (Kat)
 /// @see ConfigParser
 class TopologyGraph {
 	/// The graph representing the topology.
 	private final Map<String, Set<String>> graph = new HashMap<>();
 
-	/// A map of links, like the map seen in the `links` section of `config.example.json`.
+	/// @param links A map of links, like the map seen in the `links` section of `config.example.json`.
 	TopologyGraph(Map<String, String> links) {
 		links.forEach(this::putEdge);
 	}
 
 	private void putVertex(String vertex) {
-		boolean vertexIsNew = !graph.containsKey(vertex);
-
-		if (vertexIsNew)
+		if (!graph.containsKey(vertex))
 			graph.put(vertex, new HashSet<>());
 	}
 
@@ -34,8 +33,7 @@ class TopologyGraph {
 	String[] getAdjacentDevicesOf(String id) {
 		Set<String> adjacentDevices = graph.get(id);
 
-		return adjacentDevices == null
-				? null
+		return adjacentDevices == null ? null
 				: adjacentDevices.toArray(new String[]{});
 	}
 
