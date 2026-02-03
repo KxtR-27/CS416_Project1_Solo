@@ -126,6 +126,7 @@ public class ConfigParser {
 	}
 
 	/// Test driver
+	// TODO: replace with unit testing suite
 	static void main() {
 		updateConfigMap();
 		System.out.printf("%n%s%n", devices);

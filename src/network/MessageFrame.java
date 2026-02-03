@@ -7,11 +7,15 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
+/// Stores the three values for a frame: the source, the destination, and the message.
+/// Capable of converting to and from a datagram packet.
 public record MessageFrame(
 		String sourceID,
 		String destinationID,
 		String message
 ) {
+	/// Attempts to reconstruct a packet into a MessageFrame.<br>
+	/// **Will not work with packets that don't match the format.**
 	public static MessageFrame fromPacket(DatagramPacket messagePacket) {
 		try {
 			byte[] contents = Arrays.copyOf(messagePacket.getData(), messagePacket.getLength());
@@ -23,7 +27,12 @@ public record MessageFrame(
 		}
 	}
 
-	// recipient =/= destination
+	/// A message converts itself into a packet.
+	/// Since DatagramPackets need to specify a target,
+	/// a recipient is passed into the converter for this purpose.
+	///
+	/// @param nextRecipient The target for the message.
+	///                      Its IP and port are used to construct the packet.
 	public DatagramPacket toPacketFor(DeviceConfig nextRecipient) throws UnknownHostException {
 		byte[] messageBytes = this.toString().getBytes();
 		int messageLength = messageBytes.length;

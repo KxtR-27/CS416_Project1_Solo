@@ -11,7 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Switch extends NetworkDevice {
+	/// A switch table that logs each source ID, virtual port, and time updated into a table form.
 	private final Map<String, SwitchTableEntry> switchTable;
+
+	/// A map of virtual switch ports for each logged ID.
 	private final Map<String, String> virtualPorts;
 
 	private Switch(String[] args) throws SocketException {
@@ -21,6 +24,7 @@ public class Switch extends NetworkDevice {
 		configureVirtualPorts();
 	}
 
+	/// Sets up initial virtual ports for immediate neighbors
 	private void configureVirtualPorts() {
 		for (String neighborID : myConfig.neighbors()) {
 			DeviceConfig neighbor = ConfigParser.getConfigForDevice(neighborID);
@@ -32,6 +36,8 @@ public class Switch extends NetworkDevice {
 		}
 	}
 
+	/// Adds/updates the source in the table,
+	/// then sends the message if the table knows the destination, otherwise it floods.
 	private void transferMessage(MessageFrame message) throws IOException {
 		if (!inTable(message.sourceID())) {
 			addTableEntry(message.sourceID());
@@ -53,6 +59,7 @@ public class Switch extends NetworkDevice {
 		switchTable.put(deviceID, new SwitchTableEntry(virtualPorts.get(deviceID)));
 	}
 
+	/// Prints the formatted switch table in its current state
 	private void printSwitchTable() {
 		System.out.printf("Switch %s:%n", id);
 		System.out.printf("%s%n", "-".repeat(52));
@@ -64,7 +71,8 @@ public class Switch extends NetworkDevice {
 		System.out.printf("%n");
 	}
 
-	// When the source of the message is not in the table...
+	/// When the source of the message is not in the table,
+	/// flood it to all neighbors except the neighbor who sent it
 	private void floodMessage(MessageFrame message) throws IOException {
 		String previousRecipient = ConfigParser.previousRecipient(message.sourceID(), id);
 
@@ -73,6 +81,7 @@ public class Switch extends NetworkDevice {
 				sendMessage(message, neighbor);
 	}
 
+	/// Initiates the receive + transfer loop
 	@Override
 	protected void onOpen() throws IOException {
 		// the loop is intentionally broken manually by interrupting the program
@@ -83,11 +92,12 @@ public class Switch extends NetworkDevice {
 		}
 	}
 
+	/// The switch is interrupted manually, therefore closing behavior is redundant.
 	@Override
-	// The switch is interrupted manually, therefore
-	// closing behavior is redundant.
 	protected void onClose() {}
 
+	/// A value for the Switch Table map containing a virtual port
+	/// and the time at which it was last used
 	private static class SwitchTableEntry {
 		private static final DateTimeFormatter timeFormatter =
 				DateTimeFormatter.ISO_LOCAL_TIME;

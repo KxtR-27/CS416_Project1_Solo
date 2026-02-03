@@ -7,17 +7,25 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/// Scans messages from the console and sends/receives them from switches.
 public class Host extends NetworkDevice {
+	/// Scans messages from the console
 	private final Scanner consoleScanner;
+
+	/// Manages receiving thread
 	private final ExecutorService executor;
+
+	/// Once false, stops the loop and closes the host
 	private boolean running = true;
 
+	/// @param args the command-line args from main(), which should only be an ID
 	private Host(String[] args) throws SocketException {
 		super(args);
 		consoleScanner = new Scanner(System.in);
 		executor = Executors.newSingleThreadExecutor();
 	}
 
+	/// Scans and parses a message from the command-line and parses it into a `MessageFrame`
 	private MessageFrame scanMessage() {
 		System.out.printf("Please enter a short message:%n>> ");
 		String message = consoleScanner.nextLine();
@@ -29,6 +37,8 @@ public class Host extends NetworkDevice {
 		return new MessageFrame(this.id, destinationID, message);
 	}
 
+	/// Creates a concurrent packet listener and
+	/// initiates the scan + send loop
 	@Override
 	protected void onOpen() throws IOException {
 		executor.submit(new ReceiverTask());
@@ -39,6 +49,7 @@ public class Host extends NetworkDevice {
 		}
 	}
 
+	/// Stops the listener task and closes the Host
 	@Override
 	protected void onClose() {
 		consoleScanner.close();
@@ -46,6 +57,7 @@ public class Host extends NetworkDevice {
 		running = false;
 	}
 
+	/// On a separate thread, constantly wait to receive message packets
 	private class ReceiverTask implements Runnable {
 		@Override
 		public void run() {
