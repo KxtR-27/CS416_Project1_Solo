@@ -8,6 +8,7 @@ package config;
 ///
 /// @param port      The port on which the host or switch operates
 /// @param ipAddress The IP address on which the host or switch operates
+/// @param neighbors A string array of neighboring devices' IDs
 ///
 /// @author KxtR-27 (Kat)
 /// @see ConfigParser
