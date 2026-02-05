@@ -69,7 +69,6 @@ public class Host extends NetworkDevice {
 					socket.receive(packet);
 					MessageFrame messageFrame = MessageFrame.fromPacket(packet);
 
-
 					if (!messageFrame.destinationID().equals(id))
 						System.out.printf(
 								"%nMAC address mismatch (destination MAC: %s | my MAC: %s)%n>> ",

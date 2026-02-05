@@ -18,7 +18,7 @@ import java.util.Map;
 /// - `ConfigParser.getConfigForDevice()` - get device port, IP, and neighbors in a `DeviceConfig`
 /// - `ConfigParser.previousRecipient()` - a clearer way for intermediary
 ///   switches to know who NOT to flood (looking at you, S2)
-/// - `ConfigParser.nextRecipient` - a clear way to know who to transfer the message to.
+/// - `ConfigParser.nextRecipient()` - a clear way to know who to transfer the message to.
 ///   For some reason, messages got lost in translation before this method.
 ///
 /// @author KxtR-27 (Kat)
@@ -62,6 +62,9 @@ public class ConfigParser {
 	}
 
 	/// Reloads/reparses the `config.json` file just in case it was changed during runtime.
+	/// If the reloaded config is broken (returns `null`), keeps the old config.
+	///
+	/// @see #loadConfigFile()
 	private static void updateConfigMap() {
 		// can be null if error occurs
 		ConfigSnapshot snapshot = loadConfigFile();
@@ -81,9 +84,12 @@ public class ConfigParser {
 		));
 	}
 
-	/// Uses GSON to convert the `config.json` file to
-	/// a map of devices
-	/// and a map of topological edges for the graph.
+	/// Uses GSON to convert the `config.json` file to a map of devices and a map of topological edges for the graph.
+	/// If an error occurs, prints the underlying exception with a helpful added message.
+	///
+	/// @return `ConfigSnapshot` object if the config file loads correctly, or `null` if an error occurs.
+	///
+	/// @see #printErrorWithMessage(Exception)
 	private static ConfigSnapshot loadConfigFile() {
 		// try-with-resources automatically closes the readers after using them
 		try (JsonReader reader = new JsonReader(new FileReader("src/config/config.json"))) {

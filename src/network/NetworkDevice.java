@@ -44,21 +44,21 @@ abstract class NetworkDevice implements AutoCloseable {
 		DeviceConfig config = ConfigParser.getConfigForDevice(id);
 
 		if (config == null) {
-			System.out.printf("ID not registered in config.json file.%n");
+			System.out.printf("ID \"%s\" not registered in config.json file.%n", id);
 			System.exit(-1);
 		}
 
 		return config;
 	}
 
-	/// Sends a given messageFrame packet to a given recipient
+	/// Sends a given `messageFrame` packet to a given recipient
 	protected void sendMessage(MessageFrame messageFrame, String recipientID) throws IOException {
 		DeviceConfig recipient = ConfigParser.getConfigForDevice(recipientID);
 		DatagramPacket messagePacket = messageFrame.toPacketFor(recipient);
 		socket.send(messagePacket);
 	}
 
-	/// Waits and receives a packet, then converts it to an actual messageFrame
+	/// Waits and receives a packet, then converts it to an actual `messageFrame`
 	protected MessageFrame receiveMessage() throws IOException {
 		DatagramPacket messagePacket = new DatagramPacket(new byte[1024], 1024);
 		socket.receive(messagePacket);
@@ -73,13 +73,12 @@ abstract class NetworkDevice implements AutoCloseable {
 	/// (even though it's not currently implemented)
 	protected abstract void onClose();
 
-	/// Invokes onOpen() so that subclasses don't have to
+	/// Invokes `onOpen()` so that subclasses don't have to
 	public void open() throws IOException {
 		onOpen();
 	}
 
-	/// Invokes onClose() (and closes the socket)
-	/// so that subclasses don't have to
+	/// Invokes `onClose()` (and closes the socket) so that subclasses don't have to
 	@Override
 	public void close() {
 		socket.close();
