@@ -105,7 +105,7 @@ public class Switch extends NetworkDevice {
 		private final String switchPort;
 		private LocalTime time;
 
-		public SwitchTableEntry(String switchPort) {
+		private SwitchTableEntry(String switchPort) {
 			this.switchPort = switchPort;
 			refresh();
 		}
